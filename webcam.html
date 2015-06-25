@@ -101,11 +101,11 @@
   <script>
     app = {};
 
-    // 1. grab the video element with jQuery and store it in app.video
+    // Video element with jQuery and store it in app.video
     app.video = $('.webcam')[0]; // want to access the video, not the jquery element
     app.video = document.querySelector('.webcam');
 
-    // 2. grab the canvas with jquery and store it in app.canvas
+    // Canvas with jquery and store it in app.canvas
     app.canvas = $('.photo')[0];
     app.canvas = document.querySelector('.photo');
 
@@ -119,10 +119,10 @@
       navigator.getUserMedia({ video: true,  audio: false }, // these are the "constraints"
         function(localMediaStream) {  //successCallback, this function is called when user accepts use of local media
         console.log(app.video);
-        // 3. set the video source with window.URL.createObjectURL
+        // Set the video source with window.URL.createObjectURL
         app.video.src = window.URL.createObjectURL(localMediaStream);
 
-        // 4. play the video!
+        // Play the video!
         app.video.play();
 
       },
@@ -133,21 +133,21 @@
     }
 
     app.takePhoto = function() {
-      /* The next four lines set the canvas to the same size as the video */
+      /* Set the canvas to the same size as the video */
       var width = $(app.video).width();
       var height = $(app.video).height();
       app.canvas.width = width;
       app.canvas.height = height;
 
-      // 5. Then we "draw" the video (one frame) to the canvas
+      // "Draw" the video (one frame) to the canvas
       var ctx = app.canvas.getContext('2d'); // store the context in a variable
       ctx.drawImage(app.video, 0, 0, width, height)
 
-      // 6. Then we convert that canvas to a "data blob"  which is like an image src
+      // Convert that canvas to a "data blob"  which is like an image src
       var data = app.canvas.toDataURL('image/jpeg');
       console.log(data);
 
-      // 7.  -  1. create an image 2. set the source the be the data 3. append to an element
+      // Create an image, set the source the be the data, append to an element
       var stripItem = $('<div>').addClass('strip-item');
       var img = $('<img>').attr('src', data);
       var link = $('<a>').attr('href', data).attr('download', 'good-looking.jpg');
