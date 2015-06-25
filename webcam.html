@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>getUserMedia()</title>
+
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 </head>
 <body>
 
@@ -10,6 +12,7 @@
     <video class="webcam" autoplay></video>
     <!-- can take out app.video.play(); and do this instead -->
     <!-- <video class="webcam" autoplay></video> -->
+    <div class="take-photo"><i class="fa fa-camera-retro"></i></div>
     <canvas class="photo"></canvas>
     <div class="strip"></div>
   </div>
@@ -23,21 +26,75 @@
     * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
     .photoBooth{
-      width: 60%;
-      margin: 20px auto;
+      background: #000;
+      width: 80%;
+      margin: 0px auto;
+      padding: 20px;
     }
 
     .webcam{
+      display: block;
+      width: 80%;
       border-radius: 10px;
+      margin: 0 auto;
+    }
+
+    .take-photo{
+      height: 33px;
+      width: 80%;
+      background: #fff;
+      border-radius: 4px;
+      margin: 10px auto;
+      position: relative;
+    }
+
+    .take-photo i{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50%);
+    }
+
+    .take-photo:hover i{
+      color: #545454;
+    }    
+
+    .take-photo:hover {
+      background: #d3d3d3;
     }
 
     canvas {
       display: none;
     }
 
-    .strip img {
-      width:400px;
+    .strip{
+      width: 80%;
+      margin: 0 auto;
     }
+
+    .strip-item {
+      display: inline-block;
+      width:19%;
+      margin: .5%;
+      position: relative;
+    }
+
+    .strip-item img{
+      width: 100%;
+      border-radius: 4px;
+    }
+
+    .strip-item .trash {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 12px;
+    }
+
+    .strip-item .trash:hover{
+      color: red;
+    }
+
   </style>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -85,24 +142,38 @@
       // 5. Then we "draw" the video (one frame) to the canvas
       var ctx = app.canvas.getContext('2d'); // store the context in a variable
       ctx.drawImage(app.video, 0, 0, width, height)
-      ctx.fillStyle = '#BADA55';
-      ctx.fillRect(20,20,200,200);
 
       // 6. Then we convert that canvas to a "data blob"  which is like an image src
       var data = app.canvas.toDataURL('image/jpeg');
       console.log(data);
 
       // 7.  -  1. create an image 2. set the source the be the data 3. append to an element
-      var img = $('<img>').attr('src', data)
+      var stripItem = $('<div>').addClass('strip-item');
+      var img = $('<img>').attr('src', data);
       var link = $('<a>').attr('href', data).attr('download', 'good-looking.jpg');
+      var killBox = $('<div>').addClass('trash').append('<i class="fa fa-times"></i>');
       link.append(img); // put image inside link
-      $('.strip').append(link);
+      stripItem.append(link);
+      stripItem.append(killBox);
+      $('.strip').append(stripItem);
+    }
+
+    app.init = function(){
+      app.getVideo();
+      $('.take-photo').on('click', function(){
+        app.takePhoto();
+      });
+
+      $('.strip').on('click','.trash',function(){
+        $(this).parent().remove();
+      });
 
     }
 
 
     $(function() {
-      app.getVideo();
+      app.init();
+
     });
 
   </script>
